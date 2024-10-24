@@ -1,5 +1,5 @@
 #include "include/EventLoop.h"
-
+#include "Poller.h"
 #include <glog/logging.h>
 //#include <Poller.h>
 #include <Channel.h>
@@ -48,7 +48,7 @@ EventLoop::EventLoop():looping_(false),
                         quit_(false),
                         eventHanding_(false),
                         iteration_(0),
-                        //poller_(new Poller(this)),
+                        poller_(new Poller(this)),
                         wakeupfd_(createEventfd()),
                         wakeupChannel_(new Channel(this, wakeupfd_)),
                         currentActiveChannel_(NULL) {

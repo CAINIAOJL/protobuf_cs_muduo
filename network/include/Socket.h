@@ -7,7 +7,8 @@ class Inet_address;
 
 class Socket {
 public:
- Socket(int sockfd) : sockfd_(sockfd) {}
+ /*必须使用显式调用*/
+ explicit Socket(int sockfd) : sockfd_(sockfd) {}
  ~Socket();
 
  int fd() const {return sockfd_;}

@@ -1,5 +1,6 @@
 #include "EventLoop.h"
 #include "Channel.h"
+#include <poll.h>
 #include <cassert>
 using namespace network; 
 
@@ -7,14 +8,14 @@ namespace network {
 /**
  * @brief Construct a new Channel object
  */
-Channel::Channel(EventLoop* loop, int fd):
+explicit Channel::Channel(EventLoop* loop, int fd):
                 loop_(loop), 
                 fd_(fd),
                 events_(0),
                 revents_(0),
                 index_(-1),
                 eventHandling_(false),
-                addedToLoop_(false),
+                addedToLoop_(false)
                 {}
 
 Channel::~Channel() {

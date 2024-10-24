@@ -18,7 +18,7 @@ public:
     };
  /*事件回调函数*/
  typedef std::function<void()> EventCallback;
- Channel(EventLoop* loop, int fd);   
+ explicit Channel(EventLoop* loop, int fd);   
  ~Channel();
  
  /*处理事件*/
@@ -78,7 +78,7 @@ public:
  //static const int KWriteEvent; /*写事件*/
 
   EventLoop* loop_; /*属于EventLoop中*/
-  int fd_;/*文件描述符*/
+  int fd_;/*文件描述符*/ /*这里的套接字其实是临时的, 真正的监听套接字在Acceptor中*/
   int events_; /*事件类型*/
   int revents_; /*实际发生的事件*/
   int index_; 
