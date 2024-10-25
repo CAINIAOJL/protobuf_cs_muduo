@@ -8,5 +8,5 @@ class Nocopyable {
     protected:
         nocopyable() = default;
         ~nocopyable() = default;
-}
+};
 }

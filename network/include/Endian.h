@@ -16,5 +16,5 @@ namespace endian {
     inline uint32_t net_to_host_32(uint32_t net_32) { return be32toh(net_32);}
     inline int64_t net_to_host_64(uint64_t net_64) { return le64toh(net_64);}
 #pragma GCC diagnostic pop
-}
+};
 }

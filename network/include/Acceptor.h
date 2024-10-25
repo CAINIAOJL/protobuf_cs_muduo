@@ -35,7 +35,7 @@ private:
  bool listening_;
  int idlefd_;
  NewConnectionCallback new_connection_callback_;
-}
+};
 }
 
 

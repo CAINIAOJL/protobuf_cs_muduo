@@ -31,8 +31,6 @@ public:
  
  private:
   int sockfd_;
-}
-
-
+};
 }
 

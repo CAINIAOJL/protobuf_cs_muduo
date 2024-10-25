@@ -94,6 +94,6 @@ private:
  Channel* currentActiveChannel_;/*当前活跃的channel*/
  ChannelList activeChannels_;/*活跃的channel列表*/
 
-}
+};
 
 } // namespace network

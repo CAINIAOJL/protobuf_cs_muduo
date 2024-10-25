@@ -2,7 +2,7 @@
 
 #include <sys/epoll.h>
 #include <functional>
-#include <atomic>/*原子类中*/
+#include <atomic>/*c++11 原子类中*/
 /*在这个protbuf_rpc中，不涉及多线程*/
 #include <memory>/*智能指针*/
 namespace network

@@ -41,5 +41,5 @@ public:
  typedef std::map<int, Channel*> ChannelMap;
  ChannelMap channels_; 
 
-}
+};
 }

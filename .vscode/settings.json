@@ -82,6 +82,9 @@
         "variant": "c",
         "cassert": "cpp",
         "any": "cpp",
-        "glut.h": "c"
+        "glut.h": "c",
+        "complex": "cpp",
+        "source_location": "cpp",
+        "typeindex": "cpp"
     }
 }
