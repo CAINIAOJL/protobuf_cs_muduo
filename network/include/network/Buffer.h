@@ -203,7 +203,7 @@ public:
  }
  //////////////////////////////////////////////////
 
- size_t readFd(int fd, int* saveerrno);
+ ssize_t readFd(int fd, int* saveerrno);
 private:
  char* begin() {return &*buffer_.begin();}
  const char* begin() const {return &*buffer_.begin();}

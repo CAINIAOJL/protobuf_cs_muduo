@@ -1,4 +1,4 @@
-#include "Acceptor.h"
+#include "network/Acceptor.h"
 
 #include "Inet_address.h"
 #include "EventLoop.h"
@@ -99,16 +99,6 @@ void Acceptor::handle_read() {
 	 //idlefd = ::open("/dev/null", O_RDONLY | O_CLOEXEC);
   //}
 //}
-
-
-
-
-
-
-
-
-
-
 }
 
 

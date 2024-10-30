@@ -28,10 +28,12 @@ public:
  读事件；
  写事件；
  错误事件；*/
+ //这些回调函数，实际上要到连接的时候才去设置
  void setReadEventCallback(EventCallback cd) {readCallback_ = std::move(cb);}
  void setWriteEventCallback(EventCallback cb) {writeCallback_ = std::move(cb);}
  void setErrorEventCallback(EventCallback cb) {errorCallback_ = std::move(cb);}
- 
+ void setCloseCallback(EventCallback cb) {closeCallback_ = std::move(cb);}
+
  int fd() const {return fd_;}
  int event() const {return events_;}
  int index() const {return index_;}/*for poller*/
@@ -89,5 +91,5 @@ public:
   EventCallback writeCallback_;
   EventCallback errorCallback_;
   EventCallback closeCallback_; /*关闭事件回调函数*/
-}
+};
 } // namespace network

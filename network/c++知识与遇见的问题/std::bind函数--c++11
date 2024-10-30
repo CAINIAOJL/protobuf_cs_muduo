@@ -1,0 +1,151 @@
+std::bind是C++ 11中<functional>头文件提供的一个函数模板，它允许我们将函数或成员函数与其部分参数预先绑定在一起，形成一个新的可调用对象（英文为：Callable Object）。这个新的可调用对象可以在后续时机以剩余参数完成调用，这个机制对于事件处理、回调函数设置、以及其他需要延迟执行或部分参数预设定的情况尤为有用。
+std::bind 的主要功能包括：
+部分参数预绑定：通过std::bind，你可以将一个函数或成员函数的部分参数预先设定好，生成一个新的可调用对象。在后续调用时，只需要提供未被绑定的参数即可完成函数调用。
+占位符支持：C++ 11提供了一系列占位符，比如：_1、 _2、...，这些占位符用于表示原函数中待传入的参数位置。比如：_1 表示第一个参数，在绑定时使用占位符可以保留参数的位置，在之后的调用中填入对应的值。
+成员函数绑定：不仅可以绑定普通函数、函数对象，还可以绑定类的成员函数和成员变量。当绑定成员函数和成员变量时，除了需要指定成员函数地址外，还需要提供一个指向该类实例的指针或者引用。
+嵌套绑定：std::bind可以接受另一个std::bind的结果作为参数，实现嵌套绑定，这使得更复杂的组合和回调逻辑成为可能。
+兼容性与灵活性：std::bind返回的对象可以存储于std::function中，增加了可调用对象的通用性和封装性，可应用于事件处理、多线程编程、信号槽机制等多种场景。
+
+bind的使用
+1、bind普通函数。在C++ 11中，std::bind可以用于普通函数的参数绑定。
+在下面的示例代码中，std::bind创建了一个新的可调用对象boundPrint，它保留了原始函数的部分或全部参数。当调用这个新对象时，会自动使用预绑定的值与传入的新值进行计算。_1、_2等占位符用来指代待填入的参数位置，在实际调用时会被相应的实参替换。
+
+#include <iostream>
+#include <functional>
+using namespace std;
+
+void PrintSum(int nNum1, int nNum2)
+{
+    cout << nNum1 << " + " << nNum2 << " = " << nNum1 + nNum2 << endl;
+}
+
+int main()
+{
+    // 将print_sum函数的第一个参数绑定为66，_1是占位符，表示调用时提供的第一个参数
+    auto boundPrint = bind(PrintSum, 66, placeholders::_1);
+    // 现在bound_print是一个可调用对象，只需要提供第二个参数
+    boundPrint(99);
+
+    // 或者，我们可以把两个参数都绑定
+    auto boundPrint2 = bind(PrintSum, 1024, 2048);
+    // 调用时不需要提供任何参数，因为所有参数都已经在bind时固定了
+    boundPrint2();
+
+    return 0;
+}
+2、bind函数对象。在C++ 11中，std::bind不仅可以用于绑定普通函数，同样可以用于绑定函数对象。函数对象是指重载了()操作符的对象，使得它们可以像函数一样被调用。
+在下面的示例代码中，我们创建了一个名为TAdder的函数对象，它具有一个成员变量base和一个重载的()操作符，该操作符接受一个整数参数并返回base与其相加的结果。然后，我们使用std::bind将这个函数对象的()操作符与一个参数绑定，生成一个新的可调用对象boundAdd。当调用boundAdd时，它会自动使用预先设定的base值加上传递给它的参数。
+
+#include <iostream>
+#include <functional>
+using namespace std;
+
+struct TAdder
+{
+    int base;
+    TAdder(int b) : base(b) {}
+    int operator()(int x) { return base + x; }
+};
+
+int main()
+{
+    TAdder adder(66);
+    auto boundAdd = bind(adder, placeholders::_1);
+    cout << boundAdd(99) << endl;
+    return 0;
+}
+3、bind类的成员函数。在C++ 11中，std::bind还可以绑定类的成员函数。但是，对于成员函数，我们需要额外提供一个指向对象实例的指针或引用以完成绑定。
+在下面的示例代码中，&CMyClass::PrintMsg是成员函数的地址，&myObject是要操作的对象实例，placeholders::_1表示新的可调用对象需要一个参数，并将它传递给原成员函数作为其参数。使用bind函数后，生成一个新的可调用对象bindPrintMsg。当调用bindPrintMsg时，我们给它传入了一个字符串参数。
+
+#include <iostream>
+#include <string>
+#include <functional>
+using namespace std;
+
+class CMyClass
+{
+public:
+    void PrintMsg(const string &strMsg)
+    {
+        cout << "Msg: " << strMsg << endl;
+    }
+};
+
+int main()
+{
+    CMyClass myObject;
+    auto bindPrintMsg = bind(&CMyClass::PrintMsg, &myObject, placeholders::_1);
+    bindPrintMsg("Hello Hope");
+    return 0;
+}
+4、bind类的成员变量。bind通常不用于直接绑定类的成员变量，但某些特殊情况下也会有这个需求。
+在下面的示例代码中，&map<int, string>::value_type::second是成员变量的地址，placeholders::_1表示遍历的map元素。最里层的bind会返回map元素的值，最外层的bind会绑定一个普通函数Output。最后，我们通过for_each遍历输出了map中每一个元素的字符串值。
+
+#include <iostream>
+#include <string>
+#include <map>
+#include <functional>
+#include <algorithm>
+using namespace std;
+
+static void Output(const string &strText)
+{
+    cout << strText << endl;
+}
+
+int main()
+{
+    map<int, string> map1;
+    map1[66] = "Hope";
+    map1[99] = "GitHub";
+    for_each(map1.begin(), map1.end(), bind(Output, 
+        bind(&map<int, string>::value_type::second, placeholders::_1)));
+    return 0;
+}
+注意事项
+1、占位符：使用placeholders::_1、placeholders::_2、...来表示未来需要传递的参数。比如：如果绑定了一个接受两个参数的函数，并且只预先提供了第一个参数，那么我们需要在调用绑定对象时提供第二个参数。
+2、引用和值捕获：bind默认按值捕获其非占位符参数。这意味着如果传递了原始对象的引用，该引用将被拷贝。若要保持对原始对象的引用或指针，请按如下方式显式指定。
+
+// 使用ref
+auto boundFunc = bind(func, std::ref(obj), placeholders::_1);
+// 或者对于指针
+auto boundMemberFunc = bind(&MyClass::func, &myObject, placeholders::_1);
+对于指定了值的参数，bind返回的函数对象会保存这些值，并且缺省是以传值方式保存的。我们可以考虑下面的示例代码。
+
+void inc(int &a)   { a++; }
+int n = 0;
+bind(inc, n)();
+调用bind返回的函数对象后，n仍然等于0。这是由于bind时，传入的是n的拷贝。如果需要传入n的引用，则可以使用ref或cref函数。
+
+// 执行完以后，n现在等于1了
+bind(inc, ref(n))();
+3、异常安全性：当bind创建的可调用对象包含指向局部变量的引用或指针时，在这些局部变量超出作用域后，调用该可调用对象可能会导致未定义行为。故务必确保：绑定的对象在其生命周期内有效。
+4、重载解析：在绑定重载函数时，可能需要明确指定要绑定的函数版本，特别是当涉及到成员函数和非成员函数重载时。
+
+bind与lambda表达式
+虽然bind非常强大，但在C++ 11之后，lambda表达式因其简洁性和易读性而逐渐受到青睐。在很多情况下，lambda表达式可以替代bind的功能，甚至更易于理解和编写。比如：上面PrintSum的绑定可以通过lambda表达式重写如下。
+
+#include <iostream>
+#include <functional>
+using namespace std;
+
+void PrintSum(int nNum1, int nNum2)
+{
+    cout << nNum1 << " + " << nNum2 << " = " << nNum1 + nNum2 << endl;
+}
+
+int main()
+{
+    auto lambdaPrint1 = [](int a) { PrintSum(66, a); };
+    lambdaPrint1(99);
+
+    auto lambdaPrint2 = []() { PrintSum(1024, 2048); };
+    lambdaPrint2();
+
+    return 0;
+}
+
+尽管如此，bind在某些特定场景下仍有其独特优势，比如：兼容旧代码、支持更多元化的绑定需求、不支持lambda表达式的编译器上使用等。
+
+总结
+bind作为C++ 11的重要新特性之一，增强了程序设计的灵活性和功能性。理解并掌握它的使用方法，有助于开发者更好地构建复杂系统，实现灵活的函数组合和调度机制。随着现代C++的发展，虽然lambda表达式在许多场合成为首选，但bind依然是我们工具箱中不可或缺的一部分。

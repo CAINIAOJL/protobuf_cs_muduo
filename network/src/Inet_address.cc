@@ -1,7 +1,7 @@
 //#include "network/include/Inet_address.h"
 //#include "network/include/Endian.h"
-#include "Endian.h"
-#include "Inet_address.h"
+#include "network/Endian.h"
+#include "network/Inet_address.h"
 #include <netdb.h>
 //#include <netinet/in.h>
 #include <cassert>

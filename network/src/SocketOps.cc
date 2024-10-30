@@ -1,7 +1,7 @@
 //#include "network/include/SocketOps.h"
-#include "SocketOps.h"
+#include "network/SocketOps.h"
 //#include "network/include/Endian.h"
-#include "Endian.h"
+#include "network/Endian.h"
 #include <glog/logging.h>
 
 #include <errno.h>
@@ -255,7 +255,7 @@ void socketops::fromIpPort(const char* ip, uint16_t port, struct sockaddr_in6* a
 }
 
 /**
- * @brief 获取socket错误码
+ * @brief 检查连接是否成功或有错误发生
  */
 int socketops::getSocketError(int sockfd) {
     int optionval;
