@@ -1,0 +1,96 @@
+compress和uncompress是zlib最基本的两个函数了。他们分别用于压缩和解压数据。 原型如下：
+
+/*压缩数据*/
+int compress(unsigned char* dest,
+			 unsigned long*destLen, 
+			 const unsigned char* source, 
+			 unsigned long sourceLen);
+
+int compress2(unsigned char* dest, 
+			 unsigned long*destLen, 
+			 const unsigned char* source,
+			 unsigned long sourceLen, 
+			 int level);
+
+/*参数：
+
+dest：压缩之后的数据缓冲区。
+desLen：压缩之后的数据缓冲区长度。
+source：原始数据缓冲区（压缩之前的数据内容）。
+sourceLen：原始数据长度。
+level：level：压缩比例，压缩级别取值：0 - 9。0压缩速度最快，9压缩速度最慢，压缩率最大。0表示不进行压缩。【compress2才有】
+返回值：
+
+Z_OK：成功。
+Z_MEM_ERROR：没有足够的内存。
+Z_BUF_ERROR：输出的缓冲区没有足够的空间。
+Z_STREAM_ERROR：level参数设置不正确。【compress2才有】
+*/
+
+
+
+/*解压数据*/
+int uncompress(unsigned char* dest, 
+				unsigned long* destLen,
+				unsigned char* source, 
+				unsigned long sourceLen);
+				
+int uncompress2(unsigned char* dest,
+				unsigned long* destLen,
+				unsigned char* source, 
+				unsigned long* sourceLen);
+
+
+/*参数：
+
+dest：解缩之后的数据缓冲区
+
+desLen：解缩之后的数据缓冲区长度
+
+source：要解压的数据缓冲区
+
+sourceLen：要解压的数据长度
+
+返回值：
+
+Z_OK：成功。
+
+Z_MEM_ERROR：没有足够的内存。
+
+Z_BUF_ERROR：输出的缓冲区没有足够的空间。
+
+Z_DATA_ERROR：输入的原始数据（source）被损坏了，或不完整。
+*/
+
+
+
+int deflateInit (z_streamp strm, int level);  //初始化压缩状态，关联相关的z_stream数据结构和压缩比例
+int deflate (z_streamp strm, int flush);   //压缩数据,  flush表示以何种方式将压缩的数据写到缓冲区中。
+int deflateEnd (z_streamp strm);    //压缩结束
+
+int inflateInit (z_streamp strm);        
+int inflate (z_streamp strm, int flush);
+int inflateEnd (z_streamp strm); 
+
+
+typedef struct z_stream_s {
+    z_const Bytef *next_in;   // 将要压缩数据的首地址
+    uInt     avail_in;  // 将要压缩数据的长度
+    uLong    total_in;  // 将要压缩数据缓冲区的长度
+ 
+    Bytef    *next_out;  // 压缩后数据保存位置。
+    uInt     avail_out; // 压缩后数据的长度
+    uLong    total_out; // 压缩后数据缓冲区的大小
+ 
+    z_const char *msg; // 存放最近的错误信息，NULL表示没有错误
+    struct internal_state FAR *state; /* not visible by applications */
+ 
+    alloc_func zalloc;  /* used to allocate the internal state */
+    free_func  zfree;   /* used to free the internal state */
+    voidpf     opaque;  /* private data object passed to zalloc and zfree */
+ 
+    int     data_type;   // 表示数据类型，文本或者二进制
+    uLong   adler;      /* adler32 value of the uncompressed data */
+    uLong   reserved;   /* reserved for future use */
+} z_stream;    
+

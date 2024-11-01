@@ -1,0 +1,146 @@
+/*traits类型	说明
+is_array
+
+判断是否为数组类型
+is_class
+
+判断是否为类类型而不是union类型
+is_function
+
+判断是否为函数类型
+is_reference
+
+判断是否为引用类型
+is_pod
+
+判断是否为POD（传统Cstruct类型）
+is_trivial
+*/
+
+// is_array example
+#include <iostream>
+#include <array>
+#include <string>
+#include <type_traits>
+ 
+int main() {
+  std::cout << std::boolalpha;
+  std::cout << "is_array:" << std::endl;
+  std::cout << "int: " << std::is_array<int>::value << std::endl;
+  std::cout << "int[3]: " << std::is_array<int[3]>::value << std::endl;
+  std::cout << "array<int,3>: " << std::is_array<std::array<int,3>>::value << std::endl;
+  std::cout << "string: " << std::is_array<std::string>::value << std::endl;
+  std::cout << "string[3]: " << std::is_array<std::string[3]>::value << std::endl;
+  return 0;
+}
+
+
+/*traits类型	说明
+is_same	判断两个类是否相同
+is_base_of	判断Base类型是否为Derivedl 类型的基类
+is_convertible	判断前面模板参数类型能否转换为后面模板参数类型
+*/
+
+// is_base_of example
+#include <iostream>
+#include <type_traits>
+ 
+struct A {};
+struct B : A {};
+ 
+int main() {
+  std::cout << std::boolalpha;
+  std::cout << "is_base_of:" << std::endl;
+  std::cout << "int, int: " << std::is_base_of<int,int>::value << std::endl;
+  std::cout << "A, A: " << std::is_base_of<A,A>::value << std::endl;
+  std::cout << "A, B: " << std::is_base_of<A,B>::value << std::endl;
+  std::cout << "A, const B: " << std::is_base_of<A,const B>::value << std::endl;
+  std::cout << "A&, B&: " << std::is_base_of<A&,B&>::value << std::endl;
+  std::cout << "B, A: " << std::is_base_of<B,A>::value << std::endl;
+  return 0;
+}
+
+
+/*traits类型	说明
+remove_cv	移除cv属性
+add_cv	添加cv属性
+remove_reference	移除引用
+add_lvaue_reference	添加左值引用
+remove_extent	移除数组顶层维度
+*/
+
+
+// remove_cv example
+#include <iostream>
+#include <type_traits>
+ 
+int main() {
+  typedef const volatile char cvchar;
+  std::remove_cv<cvchar>::type a;       // char a
+  std::remove_cv<char* const>::type b;  // char* b
+  std::remove_cv<const char*>::type c;  // const char* c (no changes)
+ 
+  if (std::is_const<decltype(a)>::value)
+    std::cout << "type of a is const" << std::endl;
+  else
+    std::cout << "type of a is not const" << std::endl;
+ 
+  if (std::is_volatile<decltype(a)>::value)
+    std::cout << "type of a is volatile" << std::endl;
+  else
+    std::cout << "type of a is not volatile" << std::endl;
+ 
+  return 0;
+}
+
+//template <bool Cond, class T, class F> struct conditional;
+#include <iostream>
+#include <typeinfo>
+#include <type_traits>
+ 
+int main() {
+	typedef std::conditional<(sizeof(long long) > sizeof(long double)), \
+		long long, long double > ::type max_size_t;
+	std::cout << typeid(max_size_t).name() << std::endl;
+ 
+	return 0;
+}
+
+
+
+基本类型判断：
+
+std::is_void<T>: 判断类型 T 是否为 void。
+std::is_integral<T>: 判断类型 T 是否为整型。
+std::is_floating_point<T>: 判断类型 T 是否为浮点型。
+std::is_array<T>: 判断类型 T 是否为数组类型。
+std::is_pointer<T>: 判断类型 T 是否为指针类型。
+std::is_reference<T>: 判断类型 T 是否为引用类型。
+std::is_const<T>: 判断类型 T 是否为 const 修饰。
+
+类型修饰：
+
+std::remove_const<T>: 移除类型 T 的 const 修饰。
+std::remove_volatile<T>: 移除类型 T 的 volatile 修饰。
+std::remove_cv<T>: 同时移除类型 T 的 const 和 volatile 修饰。
+std::remove_reference<T>: 移除类型 T 的引用修饰。
+std::remove_pointer<T>: 移除类型 T 的指针修饰。
+类型转换：
+
+std::add_const<T>: 为类型 T 添加 const 修饰。
+std::add_volatile<T>: 为类型 T 添加 volatile 修饰。
+std::add_cv<T>: 同时为类型 T 添加 const 和 volatile 修饰。
+std::add_pointer<T>: 为类型 T 添加指针修饰。
+std::add_lvalue_reference<T>: 为类型 T 添加左值引用修饰。
+std::add_rvalue_reference<T>: 为类型 T 添加右值引用修饰。
+
+类型特性检测：
+
+std::is_same<T, U>: 判断类型 T 和 U 是否相同。
+std::is_base_of<Base, Derived>: 判断类型 Base 是否为类型 Derived 的基类。
+std::is_convertible<From, To>: 判断类型 From 是否能转换为类型 To。
+
+条件类型：
+
+std::conditional<Condition, T, F>: 如果 Condition 为 true，则类型为 T，否则为 F。
+std::enable_if<Condition, T>: 如果 Condition 为 true，则类型为 T，否则此模板不参与重载决议。

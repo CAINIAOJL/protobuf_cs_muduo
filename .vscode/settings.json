@@ -85,6 +85,7 @@
         "glut.h": "c",
         "complex": "cpp",
         "source_location": "cpp",
-        "typeindex": "cpp"
+        "typeindex": "cpp",
+        "关于type_traits头文件的解释": "cpp"
     }
 }
