@@ -25,7 +25,7 @@ class ServiceDescriptor;  // descriptor.h
 class MethodDescriptor;   // descriptor.h
 class Message;            // message.h
 
-class Closure;  // closure.h
+class Closure;  // closure.h //Closure = 关闭
 
 class RpcController;  // controller.h
 class Service;        // service.h

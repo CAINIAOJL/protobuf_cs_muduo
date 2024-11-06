@@ -1,0 +1,20 @@
+syntax = "proto3";
+package self;
+
+option cc_generic_services = true;
+enum QueryType {
+  PRIMMARY = 0;
+  SECONDARY = 1;
+};
+message EchoRequest {
+  QueryType querytype = 1;
+  string payload = 2;
+}
+
+message EchoResponse {
+  int32 code = 1;
+  string msg = 2;
+}
+service EchoService {
+  rpc Echo(EchoRequest) returns(EchoResponse);
+}

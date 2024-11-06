@@ -59,7 +59,7 @@ class ProtoRpcCodec {
 private:
   RpcMessageCallback messagecb_;
   int KMinMessageLen = 4;
-  const std::string tag_ = "RPC0";
+  const std::string tag_ = "RPC0";//版本号
 
 };
 }
